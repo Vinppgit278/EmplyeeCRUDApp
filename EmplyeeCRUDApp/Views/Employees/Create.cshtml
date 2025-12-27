@@ -1,0 +1,134 @@
+﻿@model EmplyeeCRUDApp.Models.Employee
+
+@{
+    ViewData["Title"] = "Create";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<h1>Create</h1>
+
+<h4>Employee</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <b><label asp-for="FirstName" class="control-label"></label> :</b>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <b><label asp-for="LastName" class="control-label"></label> :</b>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <b><label asp-for="Gender" class="control-label"></label> :</b>
+                <select asp-for="Gender" class="form-control">
+                    <option value="">-- Select Gender --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <b><label asp-for="DOB" class="control-label"></label> :</b>
+                <input asp-for="DOB" class="form-control" />
+                <span asp-validation-for="DOB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <b><label asp-for="Email" class="control-label"></label> :</b>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <b><label asp-for="Phone" class="control-label"></label> :</b>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <b><label class="control-label"></label>Department :</b>
+                <select asp-for="DepartmentId" class="form-control" asp-items="@(new SelectList(ViewBag.Departments,"DepartmentId","DepartmentName"))">
+                    <option value="">-- Select Department --</option>
+                </select>
+                <span asp-validation-for="DepartmentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <b><label class="control-label">Country</label> :</b>
+                <select asp-for="CountryId" class="form-control" asp-items="@(new SelectList(ViewBag.Countries,"CountryId","CountryName"))">
+                    <option value="">-- Select Country --</option>
+                </select>
+                <span asp-validation-for="CountryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <b><label class="control-label">State</label> :</b>
+                <select id="StateId" asp-for="StateId" class="form-control">
+                    <option value="">-- Select State --</option>
+                </select>
+                <span asp-validation-for="StateId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <b><label class="control-label">City</label> :</b>
+                <select id="CityId" asp-for="CityId" class="form-control">
+                    <option value="">-- Select City --</option>
+                </select>
+                <span asp-validation-for="CityId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <b><label class="control-label">Pin Code</label> :</b>
+                <input asp-for="PinCode" class="form-control" />
+                <span asp-validation-for="PinCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <b><label class="control-label">Select Image </label> :</b>
+                <input type="file" name="PhotoFile" class="form-control" />
+            </div>
+            <div class="form-group">
+                <b><label asp-for="Hobbies" class="control-label"></label> :</b>
+                <input asp-for="Hobbies" class="form-control" />
+                <span asp-validation-for="Hobbies" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script>
+    $("#CountryId").change(function () {
+        var countryId = $(this).val();
+        $("#StateId").empty();
+        $("#CityId").empty();
+
+        if (countryId) {
+            $.getJSON('/Employees/GetStates?countryId=' + countryId, function (data) {
+                $("#StateId").append('<option value="">-- Select State --</option>');
+                $.each(data, function (i, item) {
+                    $("#StateId").append('<option value="' + item.stateId + '">' + item.stateName + '</option>');
+                });
+            });
+        }
+    });
+
+    $("#StateId").change(function () {
+        var stateId = $(this).val();
+        $("#CityId").empty();
+
+        if (stateId) {
+            $.getJSON('/Employees/GetCities?stateId=' + stateId, function (data) {
+                $("#CityId").append('<option value="">-- Select City --</option>');
+                $.each(data, function (i, item) {
+                    $("#CityId").append('<option value="' + item.cityId + '">' + item.cityName + '</option>');
+                });
+            });
+        }
+    });
+</script>

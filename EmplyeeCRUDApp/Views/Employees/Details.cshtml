@@ -1,0 +1,117 @@
+﻿@model EmplyeeCRUDApp.Models.Employee
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<h1>Details</h1>
+
+<h4>Employee</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">     
+        <input type="hidden" asp-for="EmployeeId" />
+        <div class="form-group">
+            <b><label asp-for="FirstName" class="control-label"></label> :</b>
+            <input asp-for="FirstName" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <b><label asp-for="LastName" class="control-label"></label> :</b>
+            <input asp-for="LastName" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <b><label asp-for="Gender" class="control-label"></label> :</b>
+            <input asp-for="Gender" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <b><label asp-for="DOB" class="control-label"></label> :</b>
+            <input asp-for="DOB" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <b><label asp-for="Email" class="control-label"></label> :</b>
+            <input asp-for="Email" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <b><label asp-for="Phone" class="control-label"></label> :</b>
+            <input asp-for="Phone" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <b><label asp-for="DepartmentId" class="control-label"></label> :</b>
+            <select asp-for="DepartmentId" class="form-control" readonly asp-items="@(new SelectList(ViewBag.Departments,"DepartmentId","DepartmentName"))">
+                <option value="">-- Select Department --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <b><label class="control-label">Country</label> :</b>
+            <select asp-for="CountryId" class="form-control" readonly asp-items="@(new SelectList(ViewBag.Countries,"CountryId","CountryName"))">
+                <option value="">-- Select Country --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <b><label class="control-label">State </label> :</b>
+            <select asp-for="StateId" readonly asp-items="@(new SelectList(ViewBag.States, "StateId", "StateName", Model.StateId))" class="form-control" id="StateId">
+            </select>
+        </div>
+        <div class="form-group">
+            <b><label class="control-label">City</label> :</b>
+            <select asp-for="CityId" readonly asp-items="@(new SelectList(ViewBag.Cities, "CityId", "CityName", Model.CityId))" class="form-control" id="CityId">
+            </select>
+        </div>
+        <div class="form-group">
+            <b><label asp-for="PinCode" class="control-label"></label> :</b>
+            <input asp-for="PinCode" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <b><label class="control-label">Photo </label> :</b>
+            <img src="~/images/@Model.PhotoPath"
+                 alt="Photo"
+                 width="60" height="60"
+                 class="img-thumbnail" /><br />
+            <input asp-for="PhotoPath" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <b><label asp-for="Hobbies" class="control-label"></label> :</b>
+            <input asp-for="Hobbies" class="form-control" readonly />
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script>
+
+    $("#CountryId").change(function () {
+        var countryId = $(this).val();
+
+        $("#StateId").empty();
+        $("#CityId").empty();
+
+        $.getJSON('/Employees/GetStates?countryId=' + countryId, function (data) {
+            $("#StateId").append('<option value="">-- Select State --</option>');
+            $.each(data, function (i, item) {
+                $("#StateId").append('<option value="' + item.stateId + '">' + item.stateName + '</option>');
+            });
+        });
+    });
+
+    $("#StateId").change(function () {
+        var stateId = $(this).val();
+
+        $("#CityId").empty();
+
+        $.getJSON('/Employees/GetCities?stateId=' + stateId, function (data) {
+            $("#CityId").append('<option value="">-- Select City --</option>');
+            $.each(data, function (i, item) {
+                $("#CityId").append('<option value="' + item.cityId + '">' + item.cityName + '</option>');
+            });
+        });
+    });
+</script>

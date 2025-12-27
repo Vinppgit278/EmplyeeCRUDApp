@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Employees List</h1>
+<h1>Employees List with all detail</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New Employee</a>
 </p>
 <form asp-action="Index" method="get">
     <div class="input-group mb-3">
@@ -62,7 +62,7 @@
                 @Html.DisplayNameFor(model => model[0].PhotoPath)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.HobbySort">Hobbies</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.HobbySort">Hobbies1</a>
             </th>
             <th></th>
         </tr>
